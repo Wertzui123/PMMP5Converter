@@ -149,19 +149,19 @@ function convertReplaceServerBroadcastPackets(string $contents): string
 }
 
 if (!isset($argv[1])) {
-    echo 'Usage: php converter.php /path/to/your/plugin\n';
+    echo "Usage: php converter.php /path/to/your/plugin\n";
     exit(0);
 }
 
 if (!file_exists(realpath($argv[1]) . '/plugin.yml')) {
-    echo 'Missing plugin.yml!\n';
+    echo "Missing plugin.yml!\n";
     exit(0);
 }
 
 if (!strpos(file_get_contents(realpath($argv[1]) . '/plugin.yml'), 'api: 4')) {
-    echo 'This plugin is already on API 5 (see plugin.yml)!\n';
+    echo "This plugin is already on API 5 (see plugin.yml)!\n";
     exit(0);
 }
 
-echo 'Converting the plugin ' . basename(realpath($argv[1])) . ' to PocketMine API 5...\n';
+echo "Converting the plugin " . basename(realpath($argv[1])) . " to PocketMine API 5...\n";
 convert(realpath($argv[1]));

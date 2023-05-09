@@ -121,8 +121,8 @@ function ConvertPreLoginKickReasons(string $contents): string
 
 function ConvertPluginPermissions(string $contents): string
 {
-    $contents = preg_replace_callback('/\$this->getPermission\((.*)\)/', function ($matches) {
-        return '$this->getPermissions()[' . $matches[1] . ']';
+    $contents = preg_replace_callback('/\$this->setPermission\((.*)\)/', function ($matches) {
+        return '$this->setPermissions([' . $matches[1] . '])';
     }, $contents);
     $regex = '/\$this->getPermission\(\)/';
     $contents = preg_replace($regex, '$this->getPermissions()[0]', $contents);

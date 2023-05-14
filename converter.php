@@ -28,8 +28,8 @@ function convert($path)
 function convertPluginYaml($path)
 {
     $content = file_get_contents($path);
-    $content = preg_replace('/api: 4.*/', 'api: 5.0.0', $content);
-    $content = preg_replace('/(?<=api: \[)[^]]*\K4\.0(\b|$)/', '5.0', $content);
+    $content = preg_replace('/api: 4\.\d+(\.\d+)?/', 'api: 5.0.0', $content);
+    $content = preg_replace('/(?<=api: \[)[^]]*\K4\.\d+(\.\d+)?(\b|$)/', '5.0.0', $content);
     file_put_contents($path, $content);
 }
 
@@ -159,12 +159,12 @@ if (!file_exists(realpath($argv[1]) . '/plugin.yml')) {
     exit(0);
 }
 
-if (preg_match('/(?<=api: \[)[^]]*\K5\.0(\b|$)/', file_get_contents(realpath($argv[1]) . '/plugin.yml')) > 0) {
+if (preg_match('/(?<=api: \[|)[^]]*\K5\.\d+(\.\d+)?(\b|$)/', file_get_contents(realpath($argv[1]) . '/plugin.yml')) > 0) {
     echo "This plugin is already on API 5 (see plugin.yml)!\n";
     exit(0);
 }
 
-if (preg_match('/(?<=api: \[)[^]]*\K4\.0(\b|$)/', file_get_contents(realpath($argv[1]) . '/plugin.yml')) === 0) {
+if (preg_match('/(?<=api: \[|)[^]]*\K4\.\d+(\.\d+)?(\b|$)/', file_get_contents(realpath($argv[1]) . '/plugin.yml')) === 0) {
     echo "This plugin is not on API 4 (see plugin.yml)!\n";
     exit(0);
 }

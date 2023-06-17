@@ -56,10 +56,6 @@ function convertBlockFactory($contents)
         return "VanillaBlocks::$matches[1]()";
     }, $contents);
 
-    $contents = preg_replace_callback('/BlockFactory::getInstance\(\)->get\((.*)\)/', function ($matches) {
-        return "GlobalBlockDataHandlers::getDeserializer(GlobalBlockDataHandlers::getUpgrader()->upgradeBlockTypeDataInt($matches[1]))";
-    }, $contents); // TODO: This could introduce bugs in situations like `BlockFactory::getInstance()->get(BlockLegacyIds::XY, $meta)`
-
     $contents = preg_replace_callback('/BlockLegacyIds::([A-Z_]+)/', function ($matches) {
         return "BlockTypeIds::$matches[1]";
     }, $contents);

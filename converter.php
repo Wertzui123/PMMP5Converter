@@ -14,6 +14,7 @@ function convert($path)
             $contents = convertPreLoginKickReasons($contents);
             $contents = convertPluginPermissions($contents);
             $contents = convertPlayerHeadVanillaItem($contents);
+            $contents = convertSkullType($contents);
             $contents = convertReplaceServerBroadcastPackets($contents);
             // TODO: Convert EntityLegacyIds? (apparently hardly used in my own code)
             // TODO: Convert BlockPlaceEvent->getBlock()? (apparently hardly used in my own code)
@@ -129,8 +130,14 @@ function ConvertPluginPermissions(string $contents): string
 function ConvertPlayerHeadVanillaItem(string $contents): string
 {
     $regex = '/VanillaItems::PLAYER_HEAD\(\)/';
-    $contents = preg_replace($regex,
-        'VanillaBlocks::MOB_HEAD()->setSkullType(SkullType::PLAYER())->asItem()', $contents);
+    $contents = preg_replace($regex, 'VanillaBlocks::MOB_HEAD()->setMobHeadType(MobHeadType::PLAYER())->asItem()', $contents);
+    return $contents;
+}
+
+function convertSkullType(string $contents): string
+{
+    $regex = '/SkullType/';
+    $contents = preg_replace($regex, 'MobHeadType', $contents);
     return $contents;
 }
 

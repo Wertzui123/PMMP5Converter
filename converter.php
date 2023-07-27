@@ -16,6 +16,7 @@ function convert($path)
             $contents = convertPlayerHeadVanillaItem($contents);
             $contents = convertSkullType($contents);
             $contents = convertReplaceServerBroadcastPackets($contents);
+            $contents = convertImmobile($contents);
             // TODO: Convert EntityLegacyIds? (apparently hardly used in my own code)
             // TODO: Convert BlockPlaceEvent->getBlock()? (apparently hardly used in my own code)
             // TODO: Convert PlayerChatEvent formatting? (apparently hardly used in my own code)
@@ -149,6 +150,15 @@ function convertReplaceServerBroadcastPackets(string $contents): string
     $contents = preg_replace($regex, 'NetworkBroadcastUtils::broadcastPackets', $contents);
     $regex = '/\$this->plugin->getServer\(\)->broadcastPackets/';
     $contents = preg_replace($regex, 'NetworkBroadcastUtils::broadcastPackets', $contents);
+    return $contents;
+}
+
+function convertImmobile(string $contents): string
+{
+    $regex = '/setImmobile\(\)/';
+    $contents = preg_replace($regex, 'setNoClientPredictions()', $contents);
+    $regex = '/isImmobile\(\)/';
+    $contents = preg_replace($regex, 'hasNoClientPredictions()', $contents);
     return $contents;
 }
 

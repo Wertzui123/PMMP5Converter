@@ -41,8 +41,27 @@ function convertItemFactory($contents)
         return "VanillaItems::$matches[1]()";
     }, $contents);
 
-    $contents = preg_replace_callback('/ItemFactory::getInstance\(\)->get\((.*)\)/', function ($matches) {
-        return "GlobalItemDataHandlers::getDeserializer()->deserializeStack(GlobalItemDataHandlers::getUpgrader()->upgradeItemTypeDataInt($matches[1]))";
+    $contents = preg_replace_callback('/ItemFactory::getInstance\(\)->get\(ItemIds::([A-Z_]+), 0\)/', function ($matches) {
+        return "VanillaItems::$matches[1]()";
+    }, $contents);
+
+    $contents = preg_replace_callback('/ItemFactory::getInstance\(\)->get\(ItemIds::([A-Z_]+), 0, (.*)\)/', function ($matches) {
+        return "VanillaItems::$matches[1]()->setCount($matches[2])";
+    }, $contents);
+
+    $contents = preg_replace_callback('/ItemFactory::getInstance\(\)->get\((?!ItemIds)(.*?)\)/', function ($matches) {
+        $item = $matches[1];
+        $commaCount = substr_count($item, ',');
+        if ($commaCount < 1) {
+            $item .= ', 0';
+        }
+        if ($commaCount < 2) {
+            $item .= ', 1';
+        }
+        if ($commaCount < 3) {
+            $item .= ', null';
+        }
+        return "GlobalItemDataHandlers::getDeserializer()->deserializeStack(GlobalItemDataHandlers::getUpgrader()->upgradeItemTypeDataInt($item))";
     }, $contents);
 
     $contents = preg_replace_callback('/ItemIds::([A-Z_]+)/', function ($matches) {
@@ -56,6 +75,23 @@ function convertBlockFactory($contents)
 {
     $contents = preg_replace_callback('/BlockFactory::getInstance\(\)->get\(BlockLegacyIds::([A-Z_]+)\)/', function ($matches) {
         return "VanillaBlocks::$matches[1]()";
+    }, $contents);
+
+    $contents = preg_replace_callback('/BlockFactory::getInstance\(\)->get\(BlockLegacyIds::([A-Z_]+), 0\)/', function ($matches) {
+        return "VanillaBlocks::$matches[1]()";
+    }, $contents);
+
+    $contents = preg_replace_callback('/BlockFactory::getInstance\(\)->get\(BlockLegacyIds::([A-Z_]+), 0, (.*)\)/', function ($matches) {
+        return "VanillaBlocks::$matches[1]()->setCount($matches[2])";
+    }, $contents);
+
+    $contents = preg_replace_callback('/BlockFactory::getInstance\(\)->get\((?!BlockLegacyIds)(.*?)\)/', function ($matches) {
+        $block = $matches[1];
+        $commaCount = substr_count($block, ',');
+        if ($commaCount < 1) {
+            $block .= ', 0';
+        }
+        return "GlobalBlockStateHandlers::getDeserializer()->deserialize(GlobalBlockStateHandlers::getUpgrader()->upgradeIntIdMeta($block))";
     }, $contents);
 
     $contents = preg_replace_callback('/BlockLegacyIds::([A-Z_]+)/', function ($matches) {
